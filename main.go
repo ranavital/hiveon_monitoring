@@ -2,28 +2,39 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-    "net/http"
+	"hiveon_monitoring/config"
+	"hiveon_monitoring/psql"
+	"hiveon_monitoring/scheduler"
+	"io/ioutil"
 )
 
+func init() {
+	if err := readConfigFile("config/local.json", config.AppConfig); err != nil {
+		panic(err.Error())
+	}
 
+	if err := psql.Init(&config.AppConfig.Postgres); err != nil {
+		panic(err.Error())
+	}
+
+	if err := psql.CreateTables(); err != nil {
+		panic(err.Error())
+	}
+}
 
 func main() {
-    resp, err := http.Get("https://hiveon.net/api/v1/stats/miner/72fc9a5770cd96f2686c816fd3672840feb96364/ETH/workers")
-    if err != nil {
-	    panic(err)
-    }
+	scheduler.RunScheduler()
+}
 
-    var responseJson = map[string]map[string]map[string]interface{}{}
-
-	if err := json.NewDecoder(resp.Body).Decode(&responseJson); err != nil {
-		panic(err)
+func readConfigFile(path string, conf *config.Config) error {
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		return err
 	}
 
-
-	for k, v := range responseJson["workers"] {
-		if v["online"] != true{
-			fmt.Printf("Worker %s is offline\n", k)
-		}
+	if err := json.Unmarshal(content, conf); err != nil {
+		return err
 	}
+
+	return nil
 }
