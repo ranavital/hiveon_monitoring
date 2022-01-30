@@ -20,10 +20,10 @@ func init() {
 		panic(err.Error())
 	}
 
-	// if err := psql.CreateTables(); err != nil {
-	// 	logger.Logging.Info("[init]: failed to create tables on db")
-	// 	panic(err.Error())
-	// }
+	if err := psql.CreateTables(); err != nil {
+		logger.Logging.Info("[init]: failed to create tables on db")
+		panic(err.Error())
+	}
 
 	if err := logger.Init(); err != nil {
 		logger.Logging.Info("[init]: failed to init logger")

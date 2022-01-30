@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"hiveon_monitoring/config"
 	"hiveon_monitoring/entities"
 	"hiveon_monitoring/logger"
@@ -96,12 +97,29 @@ func handleOnlineWorker(name string) error {
 	}
 
 	logger.Logging.Info("[handleOnlineWorker]: Worker %s is online", worker.Name)
+	if err := SendTelegramAlert(fmt.Sprintf("Worker %s is online", worker.Name)); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 func handleAlert(worker *entities.OfflineWorker, curTime *time.Time) error {
-	// TODO: ALERT TELEGRAM
+	customMsg := ""
+	switch worker.Name {
+	case "MiriRegev":
+		customMsg = ", Ran stop playing RL, you are always loosing!!!"
+	case "THEOERIGISBACK2", "ARGAZ":
+		customMsg = ", Tal stop playing Factorio, it's a shitty game!!!"
+	case "BoratSagdiyev":
+		customMsg = ", Matan call mama... NOW!"
+	case "MainOERig":
+		customMsg = ", ARGAZIM ALERT, GO TO YOSSI ASAP!!!!!!!!"
+	}
+	if err := SendTelegramAlert(fmt.Sprintf("Worker %s is offline%s", worker.Name, customMsg)); err != nil {
+		return err
+	}
+
 	worker.LastAlertTime = curTime
 	worker.UpdatedAt = curTime
 	if err := psql.UpdateWorker(worker); err != nil {
@@ -150,4 +168,6 @@ func HandleWorkers() {
 		logger.Logging.Error("[handleWorkers]: failed to handle offline workers: %s\n", err)
 		return
 	}
+
+	logger.Logging.Info("[handleWorkers]: successfuly handled workers")
 }

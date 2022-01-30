@@ -14,4 +14,6 @@ type Config struct {
 	Postgres          PsqlConfig `json:"postgres"`
 	HiveonWorkersPath string     `json:"hiveon_workers_url"`
 	LoggerPath        string     `json:"logger_path"`
+	TgToken           string     `json:"tg_token"`
+	TgChatId          string     `json:"tg_chat_id"`
 }
