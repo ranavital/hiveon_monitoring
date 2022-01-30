@@ -39,8 +39,8 @@ func Close() error {
 }
 
 func GetWorker(name string) (*entities.OfflineWorker, error) {
-	var worker entities.OfflineWorker
-	err := Session.Model(&worker).Where("name = ? AND downtime_length = nil", name).Find(&worker).Error
+	worker := entities.OfflineWorker{}
+	err := Session.Model(&worker).Where("name = ?", name).Find(&worker).Error
 	return &worker, err
 }
 
