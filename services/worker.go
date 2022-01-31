@@ -87,7 +87,7 @@ func handleOnlineWorker(name string) error {
 
 	curTime := time.Now()
 	delta := curTime.Sub(*worker.CreatedAt)
-	worker.DowntimeLength = &delta
+	worker.DowntimeLength = delta.String()
 	if err := psql.UpdateWorker(worker); err != nil {
 		return err
 	}
