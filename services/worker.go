@@ -97,7 +97,11 @@ func handleOnlineWorker(name string) error {
 	}
 
 	logger.Logging.Info("[handleOnlineWorker]: Worker %s is online", worker.Name)
-	if err := SendTelegramAlert(fmt.Sprintf("Worker %s is online", worker.Name)); err != nil {
+	if worker.LastAlertTime == nil {
+		return nil
+	}
+
+	if err := SendTelegramAlert(fmt.Sprintf("Worker %s is online, thanks!", worker.Name)); err != nil {
 		return err
 	}
 
@@ -108,7 +112,7 @@ func handleAlert(worker *entities.OfflineWorker, curTime *time.Time) error {
 	customMsg := ""
 	switch worker.Name {
 	case "MiriRegev":
-		customMsg = ", Ran stop playing RL, you are always loosing!!!"
+		customMsg = ", Ran stop playing RL, you are always losing!!!"
 	case "THEOERIGISBACK2", "ARGAZ":
 		customMsg = ", Tal stop playing Factorio, it's a shitty game!!!"
 	case "BoratSagdiyev":
