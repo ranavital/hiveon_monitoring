@@ -24,7 +24,7 @@ type Log struct {
 var Logging Log
 
 func Init() error {
-	file, err := os.OpenFile(config.AppConfig.LoggerPath, os.O_CREATE|os.O_WRONLY, 0666)
+	file, err := os.OpenFile(config.AppConfig.LoggerPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		return err
 	}
