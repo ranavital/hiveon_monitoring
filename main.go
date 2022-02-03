@@ -11,7 +11,11 @@ import (
 
 func init() {
 	if err := readConfigFile("config/local.json", config.AppConfig); err != nil {
-		logger.Logging.Info("[init]: failed to read config file")
+		panic(err.Error())
+	}
+	
+	if err := logger.Init(); err != nil {
+		logger.Logging.Info("[init]: failed to init logger")
 		panic(err.Error())
 	}
 
@@ -22,11 +26,6 @@ func init() {
 
 	if err := psql.CreateTables(); err != nil {
 		logger.Logging.Info("[init]: failed to create tables on db")
-		panic(err.Error())
-	}
-
-	if err := logger.Init(); err != nil {
-		logger.Logging.Info("[init]: failed to init logger")
 		panic(err.Error())
 	}
 }
