@@ -13,7 +13,7 @@ func init() {
 	if err := readConfigFile("config/local.json", config.AppConfig); err != nil {
 		panic(err.Error())
 	}
-	
+
 	if err := logger.Init(); err != nil {
 		logger.Logging.Info("[init]: failed to init logger")
 		panic(err.Error())
