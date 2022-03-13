@@ -14,7 +14,7 @@ import (
 )
 
 var TimeBetweenAlerts = time.Duration(-1) * time.Hour     // 1 hour
-var TimeAfterOffline = time.Duration(-1*15) * time.Minute // 15 Minutes
+var TimeAfterOffline = time.Duration(-1*20) * time.Minute // 20 Minutes
 
 func getWorkers() ([]string, []string, error) {
 	resp, err := http.Get(config.AppConfig.HiveonWorkersPath)
