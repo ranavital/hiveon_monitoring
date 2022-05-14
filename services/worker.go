@@ -13,8 +13,10 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var TimeBetweenAlerts = time.Duration(-1) * time.Hour     // 1 hour
-var TimeAfterOffline = time.Duration(-1*20) * time.Minute // 20 Minutes
+const (
+	TimeBetweenAlerts = time.Duration(-1) * time.Hour     // 1 hour
+	TimeAfterOffline = time.Duration(-1*20) * time.Minute // 20 Minutes
+)
 
 func getWorkers() ([]string, []string, error) {
 	resp, err := http.Get(config.AppConfig.HiveonWorkersPath)
@@ -59,7 +61,6 @@ func handleOfflineWorker(name string) error {
 		}
 		psql.Session.Create(&worker)
 		logger.Logging.Info("[handleOfflineWorker]: Successfully inserted offline worker: %s", worker.Name)
-
 		return nil
 	}
 
@@ -112,15 +113,15 @@ func handleAlert(worker *entities.OfflineWorker, curTime *time.Time) error {
 	customMsg := ""
 	switch worker.Name {
 	case "MiriRegev":
-		customMsg = ", Ran stop playing RL, you are always losing!!!"
+		customMsg = "Ran stop playing RL, you are always losing!!!"
 	case "THEOERIGISBACK2", "ARGAZ":
-		customMsg = ", Tal stop playing Factorio, it's a shitty game!!!"
+		customMsg = "Tal stop playing Factorio, it's a shitty game!!!"
 	case "BoratSagdiyev":
-		customMsg = ", Matan call mama... NOW!"
+		customMsg = "Matan call mama... NOW!"
 	case "MainOERig":
-		customMsg = ", ARGAZIM ALERT, GO TO YOSSI ASAP!!!!!!!!"
+		customMsg = "ARGAZIM ALERT, CALL mama ASAP!!!!!!!!"
 	}
-	if err := SendTelegramAlert(fmt.Sprintf("Worker %s is offline%s", worker.Name, customMsg)); err != nil {
+	if err := SendTelegramAlert(fmt.Sprintf("Worker %s is offline, %s", worker.Name, customMsg)); err != nil {
 		return err
 	}
 
