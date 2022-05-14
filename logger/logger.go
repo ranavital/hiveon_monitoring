@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"fmt"
 	"hiveon_monitoring/config"
+	"io"
 	"log"
 	"os"
 )
@@ -29,10 +29,11 @@ func Init() error {
 		return err
 	}
 
-	Logging.DebugLogger = log.New(file, "DEBUG: ", log.Ldate|log.Ltime)
-	Logging.InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime)
-	Logging.WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime)
-	Logging.ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime)
+	mw := io.MultiWriter(os.Stdout, file)
+	Logging.DebugLogger = log.New(mw, "DEBUG: ", log.Ldate|log.Ltime)
+	Logging.InfoLogger = log.New(mw, "INFO: ", log.Ldate|log.Ltime)
+	Logging.WarningLogger = log.New(mw, "WARNING: ", log.Ldate|log.Ltime)
+	Logging.ErrorLogger = log.New(mw, "ERROR: ", log.Ldate|log.Ltime)
 	Logging.file = file
 	return nil
 }
@@ -43,24 +44,18 @@ func Close() {
 
 func (l *Log) Debug(format string, params ...interface{}) {
 	l.DebugLogger.Printf(format, params...)
-	fmt.Printf(format, params...)
-	fmt.Println()
+
 }
 
 func (l *Log) Info(format string, params ...interface{}) {
 	l.InfoLogger.Printf(format, params...)
-	fmt.Printf(format, params...)
-	fmt.Println()
+
 }
 
 func (l *Log) Warning(format string, params ...interface{}) {
 	l.WarningLogger.Printf(format, params...)
-	fmt.Printf(format, params...)
-	fmt.Println()
 }
 
 func (l *Log) Error(format string, params ...interface{}) {
 	l.ErrorLogger.Printf(format, params...)
-	fmt.Printf(format, params...)
-	fmt.Println()
 }
