@@ -6,7 +6,7 @@ import (
 	"github.com/jasonlvhit/gocron"
 )
 
-var MonitoringGaps = 1 // 1 Minutes
+const MonitoringGaps = 1 // 1 Minutes
 
 type Scheduler struct {
 	s *gocron.Scheduler

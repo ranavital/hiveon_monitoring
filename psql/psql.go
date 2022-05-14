@@ -1,7 +1,5 @@
 package psql
 
-// docker run --name hiveon_monitoring -e POSTGRES_DB=postgres POSTGRES_USER=postgres -e POSTGRES_PASSWORD=trm -p 5432:5432 -d postgres
-
 import (
 	"fmt"
 	"hiveon_monitoring/config"

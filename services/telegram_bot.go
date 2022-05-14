@@ -5,24 +5,9 @@ import (
 	"hiveon_monitoring/logger"
 	"net/http"
 	"net/url"
-	// tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-// var TgBot *tgbotapi.BotAPI
-
-// func InitTgBot() error {
-// 	bot, err := tgbotapi.NewBotAPI(config.AppConfig.TgToken)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	TgBot = bot
-// 	logger.Logging.Error("[InitTgBot]: telegram bot has been created successfully")
-// 	return nil
-// }
-
 func SendTelegramAlert(alertMsg string) error {
-
 	var telegramApi string = "https://api.telegram.org/bot" + config.AppConfig.TgToken + "/sendMessage"
 	if _, err := http.PostForm(
 		telegramApi,
