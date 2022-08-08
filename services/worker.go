@@ -14,9 +14,18 @@ import (
 )
 
 const (
-	TimeBetweenAlerts = time.Duration(-1) * time.Hour     // 1 hour
-	TimeAfterOffline = time.Duration(-1*20) * time.Minute // 20 Minutes
+	TimeBetweenAlerts = time.Duration(-1) * time.Hour      // 1 hour
+	TimeAfterOffline  = time.Duration(-1*20) * time.Minute // 20 Minutes
 )
+
+var allWorkers map[string]bool
+
+func Init() {
+	allWorkers = map[string]bool{}
+	for _, worker := range config.AppConfig.AllWorkers {
+		allWorkers[worker] = true
+	}
+}
 
 func getWorkers() ([]string, []string, error) {
 	resp, err := http.Get(config.AppConfig.HiveonWorkersPath)
@@ -32,12 +41,23 @@ func getWorkers() ([]string, []string, error) {
 
 	onlineWorkers := []string{}
 	offlineWorkers := []string{}
-	for k, v := range responseJson["workers"] {
-		if v["online"] != true {
-			offlineWorkers = append(offlineWorkers, k)
+	for workerName, details := range responseJson["workers"] {
+		if _, ok := allWorkers[workerName]; !ok {
+			allWorkers[workerName] = true
+		}
+
+		if details["online"] != true {
+			offlineWorkers = append(offlineWorkers, workerName)
 			continue
 		}
-		onlineWorkers = append(onlineWorkers, k)
+
+		onlineWorkers = append(onlineWorkers, workerName)
+	}
+
+	for workerName := range allWorkers {
+		if _, ok := responseJson["workers"][workerName]; !ok {
+			offlineWorkers = append(offlineWorkers, workerName)
+		}
 	}
 
 	logger.Logging.Info("[getWorkers]: Online workers: %+v", onlineWorkers)
@@ -111,11 +131,20 @@ func handleOnlineWorker(name string) error {
 
 func handleAlert(worker *entities.OfflineWorker, curTime *time.Time) error {
 	customMsg := ""
+	workHours := inWorkHours()
 	switch worker.Name {
 	case "MiriRegev":
-		customMsg = "Ran stop playing RL, you are always losing!!!"
+		if workHours {
+			customMsg = "@Ori, Ran is playing on work hours!!!!"
+		} else {
+			customMsg = "Ran stop playing RL, you are always losing!!!"
+		}
 	case "THEOERIGISBACK2", "ARGAZ":
-		customMsg = "Tal stop playing Factorio, it's a shitty game!!!"
+		if workHours {
+			customMsg = "@Sariel @Luz @Ziv, Tal is playing on work hours!!!!"
+		} else {
+			customMsg = "Tal stop playing Paladins without inviting us, that's rude!"
+		}
 	case "BoratSagdiyev":
 		customMsg = "Matan call mama... NOW!"
 	case "MainOERig":
@@ -158,6 +187,7 @@ func handleOfflineWorkers(workersNames []string) error {
 }
 
 func HandleWorkers() {
+	logger.Logging.Info("[HandleWorkers]: getting workers from pool and handling them")
 	onlineWorkers, offlineWorkers, err := getWorkers()
 	if err != nil {
 		logger.Logging.Error("[handleWorkers]: failed to get workers: %s\n", err)
@@ -174,5 +204,28 @@ func HandleWorkers() {
 		return
 	}
 
-	logger.Logging.Info("[handleWorkers]: successfuly handled workers")
+	logger.Logging.Info("[handleWorkers]: successfuly handled workers\n")
+}
+
+func inWorkHours() bool {
+	now := time.Now()
+	nowHour := now.Hour()
+	nowMinute := now.Minute()
+	check, err := time.Parse("15:04", fmt.Sprintf("%d:%d", nowHour, nowMinute))
+	if err != nil {
+		logger.Logging.Error(err.Error())
+		return false
+	}
+
+	start, _ := time.Parse("15:04", "9:00")
+	end, _ := time.Parse("15:04", "19:00")
+	if start.Before(end) {
+		return !check.Before(start) && !check.After(end)
+	}
+
+	if start.Equal(end) {
+		return check.Equal(start)
+	}
+
+	return !start.After(check) || !end.Before(check)
 }

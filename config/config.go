@@ -16,4 +16,5 @@ type Config struct {
 	LoggerPath        string     `json:"logger_path"`
 	TgToken           string     `json:"tg_token"`
 	TgChatId          string     `json:"tg_chat_id"`
+	AllWorkers        []string   `json:"all_workers"`
 }

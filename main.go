@@ -6,6 +6,7 @@ import (
 	"hiveon_monitoring/logger"
 	"hiveon_monitoring/psql"
 	"hiveon_monitoring/scheduler"
+	"hiveon_monitoring/services"
 	"io/ioutil"
 )
 
@@ -28,11 +29,14 @@ func init() {
 		logger.Logging.Info("[init]: failed to create tables on db")
 		panic(err.Error())
 	}
+
+	services.Init()
 }
 
 func main() {
 	defer cleanup()
 	s := scheduler.Init()
+	logger.Logging.Info("[main]: starting Hiveon Monitoring")
 	s.Run()
 }
 
