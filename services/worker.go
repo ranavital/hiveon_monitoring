@@ -204,7 +204,7 @@ func HandleWorkers() {
 		return
 	}
 
-	logger.Logging.Info("[handleWorkers]: successfuly handled workers\n")
+	logger.Logging.Info("[handleWorkers]: successfuly handled workers\n ")
 }
 
 func inWorkHours() bool {
