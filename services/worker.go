@@ -211,7 +211,7 @@ func inWorkHours() bool {
 	now := time.Now()
 	nowHour := now.Hour()
 	nowMinute := now.Minute()
-	check, err := time.Parse("15:04", fmt.Sprintf("%d:%d", nowHour, nowMinute))
+	check, err := time.Parse("15:04", fmt.Sprintf("%02d:%02d", nowHour, nowMinute))
 	if err != nil {
 		logger.Logging.Error(err.Error())
 		return false
