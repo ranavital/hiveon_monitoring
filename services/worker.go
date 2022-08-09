@@ -135,13 +135,13 @@ func handleAlert(worker *entities.OfflineWorker, curTime *time.Time) error {
 	switch worker.Name {
 	case "MiriRegev":
 		if workHours {
-			customMsg = "@Ori, Ran is playing on work hours!!!!"
+			customMsg = "@ Ori, Ran is playing on work hours!!!!"
 		} else {
 			customMsg = "Ran stop playing RL, you are always losing!!!"
 		}
 	case "THEOERIGISBACK2", "ARGAZ":
 		if workHours {
-			customMsg = "@Sariel @Luz @Ziv, Tal is playing on work hours!!!!"
+			customMsg = "@ Sariel @ Luz @ Ziv, Tal is playing on work hours!!!!"
 		} else {
 			customMsg = "Tal stop playing Paladins without inviting us, that's rude!"
 		}
