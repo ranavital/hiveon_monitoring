@@ -209,6 +209,10 @@ func HandleWorkers() {
 
 func inWorkHours() bool {
 	now := time.Now()
+	if weekday := int(now.Weekday()); weekday > 4 {
+		return false
+	}
+	
 	nowHour := now.Hour()
 	nowMinute := now.Minute()
 	check, err := time.Parse("15:04", fmt.Sprintf("%02d:%02d", nowHour, nowMinute))
@@ -227,5 +231,5 @@ func inWorkHours() bool {
 		return check.Equal(start)
 	}
 
-	return !start.After(check) || !end.Before(check)
+	return (!start.After(check) || !end.Before(check)) && int(now.Weekday()) >=0 && int(now.Weekday()) <= 4
 }
