@@ -6,7 +6,7 @@
         "port": "5432",
         "password":"trm"
     },
-    "hiveon_workers_url": "https://hiveon.com/pool/api/v1/stats/miner/72fc9a5770cd96f2686c816fd3672840feb96364/ETH/workers",
+    "hiveon_workers_url": "https://hiveon.net/api/v1/stats/miner/72fc9a5770cd96f2686c816fd3672840feb96364/ETH/workers",
     "logger_path": "logs.log",
     "tg_token": "5117516862:AAHVYslNua8hBkH9k6pWWzpiViadJvDVb7Y",
     "tg_chat_id": "-634866195",
